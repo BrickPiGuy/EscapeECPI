@@ -168,7 +168,13 @@ function textAnswer(stage, answer, solved, say) {
       inp.select();
     }
   };
-  b.onclick = check; inp.onkeydown = (e) => e.key === "Enter" && check();
+  b.onclick = check;
+  inp.onkeydown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      check();
+    }
+  };
   row.append(inp, b); stage.append(row); inp.focus();
 }
 
@@ -224,7 +230,12 @@ function tryFinal() {
   }
 }
 $("final-go").onclick = tryFinal;
-$("final-input").onkeydown = (e) => e.key === "Enter" && tryFinal();
+$("final-input").onkeydown = (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    tryFinal();
+  }
+};
 $("again").onclick = () => show("intro");
 
 function confetti() {
