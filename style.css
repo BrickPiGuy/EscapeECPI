@@ -18,7 +18,12 @@ button:active { transform: translateY(2px); box-shadow: none; }
 button.big { background: #ff3fb4; box-shadow: 0 4px 0 #a01d73; font-size: 1.2rem; padding: 12px 22px; margin-top: 12px; }
 input {
   font: inherit; font-size: 1.2rem; padding: 8px 12px; border-radius: 8px; border: 2px solid #b388ff;
-  background: #1d0f42; color: #fff; text-transform: none;
+  background: #1d0f42; color: #fff; caret-color: #ffd54f; text-transform: none;
+}
+input::placeholder { color: #cbb8ee; opacity: 1; }
+input:focus-visible {
+  outline: 3px solid #ffd54f;
+  outline-offset: 2px;
 }
 header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
 #letters { display: flex; gap: 6px; }

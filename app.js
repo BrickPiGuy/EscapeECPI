@@ -157,8 +157,17 @@ function code(t) { const p = el("pre"); p.textContent = t; return p; }
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 function textAnswer(stage, answer, solved, say) {
   const row = el("div", "row"), inp = el("input"), b = el("button", "big");
-  inp.placeholder = "Your answer"; inp.autocomplete = "off"; b.textContent = "Submit";
-  const check = () => (inp.value.trim() === answer ? solved() : (say("Not quite. Trace it again!", "bad"), stage.classList.add("shake"), setTimeout(() => stage.classList.remove("shake"), 300)));
+  inp.type = "text"; inp.placeholder = "Your answer"; inp.setAttribute("aria-label", "Your answer"); inp.autocomplete = "off"; b.textContent = "Submit";
+  const check = () => {
+    if (inp.value.trim() === answer) solved();
+    else {
+      say("Not quite. Trace it again!", "bad");
+      stage.classList.add("shake");
+      setTimeout(() => stage.classList.remove("shake"), 300);
+      inp.focus();
+      inp.select();
+    }
+  };
   b.onclick = check; inp.onkeydown = (e) => e.key === "Enter" && check();
   row.append(inp, b); stage.append(row); inp.focus();
 }
@@ -208,7 +217,11 @@ function tryFinal() {
     clearInterval(tick);
     $("win-text").textContent = `${$("team-label").textContent.replace("Team: ", "")} escaped in ${Math.floor(seconds / 60)}m ${seconds % 60}s! You used patterns, variables, loops, binary, sequencing, sorting, and debugging. You're real programmers!`;
     show("win"); confetti();
-  } else $("final-msg").textContent = "GLITCH laughs: wrong password! Check the letters in order.";
+  } else {
+    $("final-msg").textContent = "GLITCH laughs: wrong password! Check the letters in order.";
+    $("final-input").focus();
+    $("final-input").select();
+  }
 }
 $("final-go").onclick = tryFinal;
 $("final-input").onkeydown = (e) => e.key === "Enter" && tryFinal();
