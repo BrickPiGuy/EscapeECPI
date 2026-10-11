@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Escape the Glitch Lab</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+  <section id="intro" class="screen">
+    <h1>🔐 Escape the Glitch Lab</h1>
+    <p class="story">The lab's rogue AI, <b>GLITCH</b>, has locked every door and scrambled the exit code!
+      Solve <b>7 coding puzzles</b>. Each one reveals a letter. Put the letters together to
+      spell the password and break free.</p>
+    <label>Team name: <input id="team" maxlength="24" placeholder="Code Queens"></label>
+    <button id="start" class="big">Start the Escape ▶</button>
+  </section>
+
+  <section id="game" class="screen hidden">
+    <header>
+      <div id="team-label"></div>
+      <div id="timer">⏱ 0:00</div>
+      <div id="letters" aria-label="Collected letters"></div>
+    </header>
+    <div id="progress"></div>
+    <article id="puzzle">
+      <span id="concept" class="tag"></span>
+      <h2 id="title"></h2>
+      <p id="story" class="story"></p>
+      <div id="stage"></div>
+      <div id="msg" role="status"></div>
+      <div class="actions">
+        <button id="hint">💡 Hint</button>
+        <button id="next" class="big hidden">Next Room ➜</button>
+      </div>
+    </article>
+  </section>
+
+  <section id="final" class="screen hidden">
+    <h2>🚪 The Final Door</h2>
+    <p class="story">Enter the password made from your collected letters.</p>
+    <div id="final-letters"></div>
+    <input id="final-input" maxlength="7" placeholder="_ _ _ _ _ _ _" autocomplete="off">
+    <button id="final-go" class="big">Unlock</button>
+    <div id="final-msg"></div>
+  </section>
+
+  <section id="win" class="screen hidden">
+    <h1>🎉 YOU ESCAPED! 🎉</h1>
+    <p class="story" id="win-text"></p>
+    <button id="again" class="big">Play Again</button>
+  </section>
+</main>
+<canvas id="confetti"></canvas>
+<script src="app.js"></script>
+</body>
+</html>
