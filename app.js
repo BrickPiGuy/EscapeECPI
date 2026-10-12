@@ -7,35 +7,46 @@ const puzzles = [
   {
     concept: "Patterns", title: "Room 1: The Number Door",
     story: "A keypad glows with a sequence. Find the rule, then type the next number.",
+    advancedStory: "A keypad glows with a sequence. Find the rule, then type the next number.",
     hints: ["Look at how each number relates to the one before it.", "Each number is double the previous one... or is it?"],
+    advancedHints: ["Compare each term with the one before it.", "Each term is multiplied by 3."],
     render(stage, solved, say) {
-      stage.append(code("3, 6, 12, 24, ?"));
-      textAnswer(stage, "48", solved, say);
+      stage.append(code(advancedMode ? "2, 6, 18, 54, ?" : "3, 6, 12, 24, ?"));
+      textAnswer(stage, advancedMode ? "162" : "48", solved, say);
     },
   },
   {
     concept: "Variables", title: "Room 2: The Memory Vault",
     story: "Variables are labeled boxes that hold values. Trace the code like a computer, line by line. What does it print?",
     hints: ["Write x and y on paper and update them after every line.", "After line 3, x is 14 and y is 7."],
+    advancedHints: ["Track x and y separately, updating only the variable assigned on each line.", "Just before print, x is 5 and y is 10."],
     render(stage, solved, say) {
-      stage.append(code("x = 4\ny = x + 3\nx = y * 2\ny = x - y\nprint(x + y)"));
-      textAnswer(stage, "21", solved, say);
+      stage.append(code(advancedMode
+        ? "x = 3\ny = 2\nx = x + y\ny = x * 2\nx = y - x\nprint(x + y)"
+        : "x = 4\ny = x + 3\nx = y * 2\ny = x - y\nprint(x + y)"));
+      textAnswer(stage, advancedMode ? "15" : "21", solved, say);
     },
   },
   {
     concept: "Loops", title: "Room 3: The Looping Hallway",
     story: "A loop repeats code. Here, a loop lives inside another loop! How many stars get printed in total?",
     hints: ["Row 0 prints 1 star, row 1 prints 2 stars...", "range(4) means i = 0, 1, 2, 3. Add 1+2+3+4."],
+    advancedHints: ["range(2, 5) gives the outer loop values 2, 3, and 4.", "For each value of i, the inner loop runs i times."],
     render(stage, solved, say) {
-      stage.append(code('for i in range(4):\n    for j in range(i + 1):\n        print("*")'));
-      textAnswer(stage, "10", solved, say);
+      stage.append(code(advancedMode
+        ? 'for i in range(2, 5):\n    for j in range(i):\n        print("*")'
+        : 'for i in range(4):\n    for j in range(i + 1):\n        print("*")'));
+      textAnswer(stage, advancedMode ? "9" : "10", solved, say);
     },
   },
   {
     concept: "Binary", title: "Room 4: The Binary Lights",
     story: "Computers count with on/off switches. Each bulb is worth a number; add the lit ones. Make the lights show the number 13.",
+    advancedStory: "Computers count with on/off switches. Each bulb is worth a number; add the lit ones. Make the lights show the number 11.",
     hints: ["Bulb values: 8, 4, 2, 1.", "13 = 8 + 4 + 1."],
+    advancedHints: ["Bulb values: 8, 4, 2, 1.", "Use the values that add up to 11."],
     render(stage, solved, say) {
+      const target = advancedMode ? 11 : 13;
       const vals = [8, 4, 2, 1], on = [false, false, false, false];
       const wrap = el("div", "bulbs"), total = el("div"); total.style.textAlign = "center";
       const upd = () => { total.textContent = "Total: " + vals.reduce((s, v, i) => s + (on[i] ? v : 0), 0); };
@@ -47,7 +58,7 @@ const puzzles = [
       const go = el("button", "big"); go.textContent = "Check Lights";
       go.onclick = () => {
         const sum = vals.reduce((s, v, i) => s + (on[i] ? v : 0), 0);
-        sum === 13 ? solved() : say("That shows " + sum + ". Try again!", "bad");
+        sum === target ? solved() : say("That shows " + sum + ". Try again!", "bad");
       };
       upd(); stage.append(wrap, total, go);
     },
@@ -56,8 +67,13 @@ const puzzles = [
     concept: "Sequencing & Loops", title: "Room 5: The Robot Courier",
     story: "Program the robot 🤖 to reach the exit 🚪. Walls 🧱 block the way. You may use only 4 blocks, so use the repeat count!",
     hints: ["Column 3 is a wall from top to row 4. Go around the bottom.", "Down ×4, Right ×4, Up ×4."],
+    advancedStory: "Program the robot 🤖 to reach the exit 🚪. Walls 🧱 block the way. Use repeat counts to navigate around them.",
+    advancedHints: ["The extra wall blocks the direct route up the right edge.", "Find a route through column 3, then approach the exit from above."],
     render(stage, solved, say) {
-      const W = ["0,2", "1,2", "2,2", "3,2"], goal = [0, 4], dirs = { "⬇": [1, 0], "➡": [0, 1], "⬆": [-1, 0], "⬅": [0, -1] };
+      const W = advancedMode
+        ? ["0,2", "1,2", "2,2", "3,2", "3,4"]
+        : ["0,2", "1,2", "2,2", "3,2"];
+      const goal = [0, 4], dirs = { "⬇": [1, 0], "➡": [0, 1], "⬆": [-1, 0], "⬅": [0, -1] };
       const grid = el("div", "grid"), prog = el("div", "row prog"), pick = el("div", "row");
       let list = [], busy = false, dir = "⬇", n = 1;
       const draw = (r = 0, c = 0) => {
@@ -111,8 +127,10 @@ const puzzles = [
     concept: "Sorting Algorithms", title: "Room 6: The Sorting Conveyor",
     story: "The crates are out of order! Click one crate, then an <b>adjacent</b> one to swap them. Sort smallest → largest (like Bubble Sort!).",
     hints: ["Compare neighbors. If the left one is bigger, swap them.", "Repeat passes from left to right until nothing needs swapping."],
+    advancedHints: ["Only swap neighboring values that are out of order.", "Keep making left-to-right passes until every value is in ascending order."],
     render(stage, solved, say) {
-      const a = [5, 2, 9, 1, 7, 3]; let sel = -1, swaps = 0;
+      const a = advancedMode ? [8, 3, 6, 1, 7, 4, 2] : [5, 2, 9, 1, 7, 3];
+      let sel = -1, swaps = 0;
       const bars = el("div", "bars"), info = el("div");
       const draw = () => {
         bars.innerHTML = "";
@@ -136,13 +154,20 @@ const puzzles = [
     concept: "Debugging", title: "Room 7: The Bug Nest",
     story: "This program should print the sum of 1 + 2 + 3 + 4 + 5 = 15, but it prints 10. Click the line with the bug 🐛.",
     hints: ["Does range(1, 5) include 5?", "range stops BEFORE the end number."],
+    advancedStory: "This program should print the sum of 2 + 3 + 4 + 5 + 6 + 7 + 8 = 35, but it prints 27. Click the line with the bug 🐛.",
+    advancedHints: ["Check the start and stop values in range(2, 8).", "Python's range stops before its end value."],
     render(stage, solved, say) {
-      const lines = ["total = 0", "for i in range(1, 5):", "    total = total + i", "print(total)"];
+      const lines = advancedMode
+        ? ["total = 0", "for i in range(2, 8):", "    total = total + i", "print(total)"]
+        : ["total = 0", "for i in range(1, 5):", "    total = total + i", "print(total)"];
       const pre = el("pre");
       lines.forEach((t, i) => {
         const s = el("span", "line click"); s.textContent = (i + 1) + "  " + t;
         s.onclick = () => {
-          if (i === 1) { s.classList.add("right"); solved("Bug squashed: it should be range(1, 6)."); }
+          if (i === 1) {
+            s.classList.add("right");
+            solved(advancedMode ? "Bug squashed: it should be range(2, 9)." : "Bug squashed: it should be range(1, 6).");
+          }
           else { s.classList.add("wrong"); say("That line is fine. Look again!", "bad"); }
         };
         pre.append(s);
@@ -178,14 +203,14 @@ function textAnswer(stage, answer, solved, say) {
   row.append(inp, b); stage.append(row); inp.focus();
 }
 
-let idx = 0, got = [], hintN = 0, seconds = 0, tick = null, solvedNow = false;
+let idx = 0, got = [], hintN = 0, seconds = 0, tick = null, solvedNow = false, advancedMode = false;
 
 function say(t, cls = "") { const m = $("msg"); m.textContent = t; m.className = cls; }
 
 function load() {
   const p = puzzles[idx]; solvedNow = false; hintN = 0;
   $("concept").textContent = "Concept: " + p.concept;
-  $("title").textContent = p.title; $("story").innerHTML = p.story;
+  $("title").textContent = p.title; $("story").innerHTML = advancedMode && p.advancedStory ? p.advancedStory : p.story;
   $("stage").innerHTML = ""; say(""); $("next").classList.add("hidden"); $("hint").disabled = false;
   $("progress").innerHTML = `<div style="width:${(idx / puzzles.length) * 100}%"></div>`;
   p.render($("stage"), (extra) => {
@@ -206,13 +231,16 @@ function drawLetters() {
 function show(id) { document.querySelectorAll(".screen").forEach((s) => s.classList.toggle("hidden", s.id !== id)); }
 
 $("start").onclick = () => {
-  $("team-label").textContent = "Team: " + ($("team").value.trim() || "Mystery Coders");
+  advancedMode = document.querySelector('input[name="difficulty"]:checked').value === "advanced";
+  $("team-label").textContent = "Team: " + ($("team").value.trim() || "Mystery Coders") + (advancedMode ? " · Advanced" : " · Standard");
   idx = 0; got = []; seconds = 0; clearInterval(tick);
   tick = setInterval(() => { seconds++; $("timer").textContent = "⏱ " + Math.floor(seconds / 60) + ":" + String(seconds % 60).padStart(2, "0"); }, 1000);
   drawLetters(); show("game"); load();
 };
 $("hint").onclick = () => {
-  const h = puzzles[idx].hints; say("💡 " + h[Math.min(hintN, h.length - 1)], "hint"); hintN++;
+  const puzzle = puzzles[idx];
+  const h = advancedMode && puzzle.advancedHints ? puzzle.advancedHints : puzzle.hints;
+  say("💡 " + h[Math.min(hintN, h.length - 1)], "hint"); hintN++;
 };
 $("next").onclick = () => {
   if (++idx < puzzles.length) return load();

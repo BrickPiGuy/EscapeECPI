@@ -25,6 +25,9 @@ input:focus-visible {
   outline: 3px solid #ffd54f;
   outline-offset: 2px;
 }
+.difficulty { display: flex; gap: 16px; width: max-content; max-width: 100%; margin: 16px 0 4px; padding: 8px 12px; border: 1px solid #ffffff50; border-radius: 8px; }
+.difficulty label { display: flex; gap: 6px; align-items: center; }
+.difficulty input { width: auto; padding: 0; border: 0; background: transparent; accent-color: #ff3fb4; }
 header { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; justify-content: space-between; }
 #letters { display: flex; gap: 6px; }
 .slot {
